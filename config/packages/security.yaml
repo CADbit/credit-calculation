@@ -29,6 +29,7 @@ security:
             pattern: ^/api
             stateless: true
             jwt: ~
+            entry_point: App\Shared\Security\CustomAuthenticationEntryPoint
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
