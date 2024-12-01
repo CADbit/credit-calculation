@@ -30,11 +30,14 @@ class Loan
     #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     private DateTimeImmutable $createAt;
 
-    #[ORM\OneToMany(targetEntity: LoanSchedule::class, mappedBy: 'loan')]
-    private Collection $loanSchedules;
-
     #[ORM\Column(type: "boolean", nullable: true)]
     private ?bool $exclude = null;
+
+    /**
+     * @var Collection<int, LoanSchedule>
+     */
+    #[ORM\OneToMany(targetEntity: LoanSchedule::class, mappedBy: 'loan')]
+    private Collection $loanSchedules;
 
     public function __construct(
         Uuid $hid,
@@ -97,7 +100,7 @@ class Loan
         }
     }
 
-    public function isExclude(): bool
+    public function isExclude(): ?bool
     {
         return $this->exclude;
     }

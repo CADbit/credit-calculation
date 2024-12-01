@@ -5,15 +5,19 @@ declare(strict_types=1);
 namespace App\Credit\UI\Api;
 
 use App\Credit\Application\Command\Create\CreateLoanRepaymentScheduleCommand;
+use App\Credit\Domain\Services\LoanQueryService;
 use App\Credit\Domain\Services\LoanRepaymentService;
 use App\Credit\Domain\VO\Amount;
 use App\Credit\Domain\VO\Installments;
 use App\Credit\UI\Request\CreateLoanRepaymentScheduleRequest;
+use App\Credit\UI\Request\CreditFilterRequest;
 use App\Credit\UI\Request\ExcludeLoanRequest;
 use InvalidArgumentException;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -25,7 +29,8 @@ class CreditController extends AbstractController
 {
     public function __construct(
         private readonly MessageBusInterface $bus,
-        private readonly LoanRepaymentService $service
+        private readonly LoanRepaymentService $service,
+        private readonly LoanQueryService $queryService
     ) {
     }
 
@@ -60,7 +65,7 @@ class CreditController extends AbstractController
         } catch (InvalidArgumentException | ExceptionInterface $e) {
             return $this->json([
                 'error' => $e->getMessage(),
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         return $this->json($result);
@@ -80,12 +85,33 @@ class CreditController extends AbstractController
     public function excludeCalculation(#[MapRequestPayload] ExcludeLoanRequest $request): JsonResponse
     {
         return $this->json([
-            'success' => $this->service->excludeLoan(Uuid::fromString($request->hid))
+            'success' => $this->service->excludeLoan(Uuid::fromString($request->hid)),
         ]);
     }
 
-    public function showCalculations()
+    #[OA\Get(
+        path: '/api/v1/credit/show',
+        summary: 'End-point for show last 4 calculation by filters',
+        security: [
+            [
+                'Bearer' => [],
+            ],
+        ],
+    )]
+    #[OA\Tag(name: 'Credit')]
+    #[Route(path: '/api/v1/credit/show', name: 'api.v1.credit.show', methods: ['GET'])]
+    public function showCalculations(#[MapQueryString] CreditFilterRequest $request): JsonResponse
     {
+        $result = [];
 
+        try {
+            $result = $this->queryService->getLastFourAndSortByExclude((bool) $request->computeFilterValue());
+        } catch (ExceptionInterface $e) {
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->json($result);
     }
 }

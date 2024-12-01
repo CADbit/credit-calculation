@@ -6,14 +6,16 @@ namespace App\Credit\Domain\Services;
 
 use App\Credit\Domain\Entity\Loan;
 use App\Credit\Domain\Entity\LoanSchedule;
+use App\Credit\Infrastructure\LoanReadRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
 
-class LoanRepaymentService
+readonly class LoanRepaymentService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly LoanRepaymentCalculator $repaymentCalculator
+        private EntityManagerInterface $entityManager,
+        private LoanRepaymentCalculator $repaymentCalculator,
+        private LoanReadRepository $loanReadRepository
     ) {
     }
 
@@ -62,13 +64,25 @@ class LoanRepaymentService
 
             $this->entityManager->persist($loan);
             $this->entityManager->flush();
-        } catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return false;
         }
 
         return true;
 
+    }
+
+    public function getLastFour(bool $excluded): array
+    {
+        $response = [];
+
+        $rows = $this->loanReadRepository->findLastFour($excluded);
+
+        foreach ($rows as $row) {
+            $response[] = $this->prepareResponse(Uuid::fromString($row['hid']));
+        }
+
+        return $response;
     }
 
     private function mapLoanToArray(Loan $loan): array
