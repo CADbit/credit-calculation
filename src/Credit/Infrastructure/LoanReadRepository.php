@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Credit\Infrastructure;
 
-use App\Credit\Domain\Entity\Loan;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\ParameterType;
@@ -17,7 +16,7 @@ class LoanReadRepository
     }
 
     /**
-     * @return array<int, Loan>
+     * @return array<int, mixed>
      * @throws Exception
      */
     public function findLastFour(bool $exclude = false): array
