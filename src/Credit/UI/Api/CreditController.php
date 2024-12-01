@@ -9,6 +9,7 @@ use App\Credit\Domain\Services\LoanRepaymentService;
 use App\Credit\Domain\VO\Amount;
 use App\Credit\Domain\VO\Installments;
 use App\Credit\UI\Request\CreateLoanRepaymentScheduleRequest;
+use App\Credit\UI\Request\ExcludeLoanRequest;
 use InvalidArgumentException;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,13 +51,14 @@ class CreditController extends AbstractController
                 new CreateLoanRepaymentScheduleCommand(
                     $hid,
                     $amount,
-                    $installments
+                    $installments,
+                    $request->rrso
                 )
             );
 
             $result = $this->service->prepareResponse($hid);
         } catch (InvalidArgumentException | ExceptionInterface $e) {
-            return new JsonResponse([
+            return $this->json([
                 'error' => $e->getMessage(),
             ], 400);
         }
@@ -64,9 +66,22 @@ class CreditController extends AbstractController
         return $this->json($result);
     }
 
-    public function removeCalculation()
+    #[OA\Put(
+        path: '/api/v1/credit/exclude',
+        summary: 'End-point for exclude calculation by HID',
+        security: [
+            [
+                'Bearer' => [],
+            ],
+        ]
+    )]
+    #[OA\Tag(name: 'Credit')]
+    #[Route(path: '/api/v1/credit/exclude', name: 'api.v1.credit.exclude', methods: ['PUT'])]
+    public function excludeCalculation(#[MapRequestPayload] ExcludeLoanRequest $request): JsonResponse
     {
-
+        return $this->json([
+            'success' => $this->service->excludeLoan(Uuid::fromString($request->hid))
+        ]);
     }
 
     public function showCalculations()

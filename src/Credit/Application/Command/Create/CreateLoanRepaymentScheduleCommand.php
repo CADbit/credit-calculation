@@ -13,7 +13,9 @@ class CreateLoanRepaymentScheduleCommand
     public function __construct(
         public Uuid $hid,
         public Amount $amount,
-        public Installments $installments
+        public Installments $installments,
+        public float $rrso,
+        public bool $exclude = false
     ) {
     }
 }

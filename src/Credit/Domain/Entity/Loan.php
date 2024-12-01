@@ -33,11 +33,15 @@ class Loan
     #[ORM\OneToMany(targetEntity: LoanSchedule::class, mappedBy: 'loan')]
     private Collection $loanSchedules;
 
+    #[ORM\Column(type: "boolean", nullable: true)]
+    private ?bool $exclude = null;
+
     public function __construct(
         Uuid $hid,
         int $installments,
         int $amount,
-        float $rrso
+        float $rrso,
+        bool $exclude = false
     ) {
         $this->hid = $hid->toString();
         $this->installments = $installments;
@@ -45,6 +49,7 @@ class Loan
         $this->rrso = $rrso;
         $this->createAt = new DateTimeImmutable();
         $this->loanSchedules = new ArrayCollection();
+        $this->exclude = $exclude;
     }
 
     public function getHid(): Uuid
@@ -90,5 +95,15 @@ class Loan
         if ($this->loanSchedules->contains($loanSchedule)) {
             $this->loanSchedules->removeElement($loanSchedule);
         }
+    }
+
+    public function isExclude(): bool
+    {
+        return $this->exclude;
+    }
+
+    public function setExclude(bool $exclude): void
+    {
+        $this->exclude = $exclude;
     }
 }

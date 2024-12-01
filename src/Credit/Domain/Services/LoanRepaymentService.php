@@ -51,9 +51,30 @@ class LoanRepaymentService
         return $response;
     }
 
+    public function excludeLoan(Uuid $hid): bool
+    {
+        try {
+            $loan = $this->entityManager->getRepository(Loan::class)->findOneBy([
+                'hid' => $hid->toString(),
+            ]);
+
+            $loan->setExclude(true);
+
+            $this->entityManager->persist($loan);
+            $this->entityManager->flush();
+        } catch (\Exception $e)
+        {
+            return false;
+        }
+
+        return true;
+
+    }
+
     private function mapLoanToArray(Loan $loan): array
     {
         return [
+            'hid' => $loan->getHid()->toString(),
             'calculation_date' => $loan->getCreateAt()->format('Y-m-d H:i:s'),
             'installments' => $loan->getInstallments(),
             'amount' => number_format($loan->getAmount(), 2, '.', '') . ' zł',

@@ -18,9 +18,14 @@ final class CreateLoanRepaymentScheduleRequest
     #[Assert\DivisibleBy(3)]
     public int $installments;
 
-    public function __construct(int $amount, int $installments)
+    #[Assert\Type("float")]
+    #[Assert\Range(min: 0.001, max: 100.00)]
+    public float $rrso;
+
+    public function __construct(int $amount, int $installments, float $rrso)
     {
         $this->amount = $amount;
         $this->installments = $installments;
+        $this->rrso = $rrso;
     }
 }

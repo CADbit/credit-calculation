@@ -23,7 +23,7 @@ readonly class CreateLoanRepaymentScheduleCommandHandler
             $command->hid,
             $command->installments->getValue(),
             $command->amount->getValue(),
-            5
+            $command->rrso
         );
 
         $this->service->createRepaymentSchedule($loan);
