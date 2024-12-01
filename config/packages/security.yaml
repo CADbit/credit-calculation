@@ -26,10 +26,11 @@ security:
             pattern: ^/api
             stateless: true
             jwt: ~
-            entry_point: App\Shared\Security\CustomAuthenticationEntryPoint
-            provider: user_provider
 
     # Kontrola dostępu do różnych zasobów w API
     access_control:
+        # Otwarty dostęp
         - { path: ^/api/doc, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1/credit/calculation, roles: PUBLIC_ACCESS }
+        # Dostęp tylko z tokenem JWT!
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

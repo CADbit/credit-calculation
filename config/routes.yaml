@@ -9,3 +9,9 @@ auth_controllers:
         path: ../src/Shared/Security/
         namespace: App\Shared\Security
     type: attribute
+
+credit:
+    resource:
+        path: ../src/Credit/UI/Api/
+        namespace: App\Credit\UI\Api
+    type: attribute
