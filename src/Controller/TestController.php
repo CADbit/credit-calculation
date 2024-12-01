@@ -2,17 +2,22 @@
 
 namespace App\Controller;
 
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use OpenApi\Attributes as OA;
 use Symfony\Component\Routing\Attribute\Route;
 
 class TestController extends AbstractController
 {
     #[OA\Get(
-        path: '/api/v1/test',
+        path: '/api/v1/test/index',
         summary: 'Test Controller for testing',
+        security: [
+            [
+                'Bearer' => [],
+            ],  # Określamy, że endpoint wymaga autoryzacji z tokenem JWT
+        ]
     )]
     #[OA\Tag(name: 'Test')]
     #[Route(path: '/api/v1/test/index', name: 'api.v1.test.index', methods: ['GET'])]
