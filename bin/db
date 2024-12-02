@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Dotenv\Dotenv;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = new Dotenv();
+$dotenv->load(__DIR__ . '/../.env');
+
+$kernel = new App\Kernel('dev', true);
+$application = new Application($kernel);
+$application->setAutoExit(false);
+
+$output = new ConsoleOutput();
+
+// Tworzenie bazy danych
+$input = new ArrayInput(['command' => 'doctrine:database:create']);
+$application->run($input, $output);
+
+// Wykonywanie migracji
+$input = new ArrayInput(['command' => 'doctrine:migrations:migrate', '--no-interaction' => true]);
+$application->run($input, $output);

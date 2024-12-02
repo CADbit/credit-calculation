@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+$options = getopt("p:");
+$port = $options['p'] ?? 8080;
+
+$command = sprintf('php -S 127.0.0.1:%d -t public', $port);
+
+echo "Starting Symfony server on http://127.0.0.1:$port\n";
+passthru($command);
