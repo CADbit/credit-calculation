@@ -27,3 +27,7 @@ services:
     App\Shared\Security\AccessDeniedListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, priority: 10 }
+
+    App\Shared\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
