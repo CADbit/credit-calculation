@@ -34,8 +34,8 @@ Powinny pojawić się w katalogu config/jwt
 
 > php bin/start-server
 
-3. Dokumentacja REST API pod adresem: [http://127.0.0.1:8000/api/doc](http://127.0.0.1:8000/api/doc)
-4. Generowanie tokena JWT przez ukryty end-point [http://127.0.0.1:8000/api/login](http://127.0.0.1:8000/api/login).
+3. Dokumentacja REST API pod adresem: [http://127.0.0.1:8080/api/doc](http://127.0.0.1:8080/api/doc)
+4. Generowanie tokena JWT przez ukryty end-point [http://127.0.0.1:8080/api/login](http://127.0.0.1:8080/api/login).
 
 Budowa body jako JSON:
 ```
@@ -52,5 +52,3 @@ Zwrotka:
 ```
 
 ### Have Fun ;-)
-
-#### Uwagi
