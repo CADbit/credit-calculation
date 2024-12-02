@@ -37,7 +37,7 @@ Powinny pojawić się w katalogu config/jwt
 3. Dokumentacja REST API pod adresem: [http://127.0.0.1:8080/api/doc](http://127.0.0.1:8080/api/doc)
 4. Generowanie tokena JWT przez ukryty end-point [http://127.0.0.1:8080/api/login](http://127.0.0.1:8080/api/login).
 
-Budowa body jako JSON:
+Budowa body jako JSON wysyłasz metodą POST:
 ```
 {
     "username": "user",
